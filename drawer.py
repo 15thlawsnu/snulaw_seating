@@ -113,7 +113,7 @@ def main():
 
         for r in result : 
             file.write(r[0]+","+r[1]+","+r[2]+","+r[3]+","+r[4]+","+str(r[5])+"\n")
-    print('[+]Done. check .\\output\\seat_drawer_result.csv')
+    print('[+]좌석 및 사물함 배치 결과 저장 경로: .\\output\\seat_drawer_result.csv')
 
     
 if __name__=="__main__":

@@ -2,11 +2,13 @@
  - python3 
   
 # 구성
+  ## run.py
+   - 메인 파일. 2024 ver에서는 그냥 이 파일 실행하면 됨
   ## seat.py 
    - 설문 데이터를 csv 형태로 입력받아 (.\input\input_data.csv) 열람실 배치 결과 출력
    - 배치 결과 구성
      - [.\output\seat_result.csv](output/seat_result.csv) : 각 인원별 3지망까지 배치된 결과
-     - [.\output\seat_unmatched_student.csv](output/seat_unmatched_student.csv) : 3지망까지 배치되지 않은 사람들 리스트
+     - [.\output\seat_unmatched_student.csv](output/seat_unmatched_student.csv) : 3지망까지 배치되지 않은 사람들 리스트 (2024 ver. 비어있는게 정상)
      - [.\output\seat_unmatched_seat.csv](output/seat_unmatched_seat.csv) : 잔여 여석 리스트
   ## drawer.py 
    - 열람실 최종 배정결과 리스트를 입력받아 ([.\output\seat_result.csv](output/seat_result.csv)) 각 열람실별 사물함 랜덤 배정
@@ -19,6 +21,13 @@
     - 입력 파일 예시
 
 # 사용 방법
+## 2024 ver.
+1. 입력받은 설문 시트 그대로 csv로 출력 후 .\input\input_data.csv에 저장. 
+2. ``python run.py``  실행
+3. output 폴더에서 seat_drawer_result.csv 확인 및 검증
+4. 입력값, 결과값 무결성 검증 위해 해시값 및 파일 백업 필요
+
+## 이하는 2023 ver.
 1. 입력받은 설문 시트 그대로 csv로 출력 후 .\input\input_data.csv에 저장. 
 2. ``python seat.py``  실행
 3. output 폴더에서 seat_unmatched_student.csv와 seat_unmatched_seat.csv 확인하여 미반영된 사람들 수동 배치하여 seat_result.csv에 업데이트
