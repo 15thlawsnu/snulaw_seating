@@ -13,11 +13,11 @@ shuffled_numbers = shuffle_range(start, end)
 for num in shuffled_numbers:
     print(num)
 """
-if __name__=="__main__":
+def main():
     # 좌석배치 완료된 파일에서 정보 입력
     student = []
     result = []
-    file_path = ".\\input\\seat_result.csv"
+    file_path = ".\\output\\seat_result.csv"
     with open(file_path, mode='rt',encoding='UTF-8', newline='') as csvfile:
         csvreader = csv.reader(csvfile)
         next(csvreader)  # 첫 번째 행을 건너뜁니다
@@ -26,59 +26,61 @@ if __name__=="__main__":
     random.shuffle(student) #학생 순서 랜덤으로 섞기 -> 섞인 순서를 기준으로 앞에부터 사물함 배정
 
 
+
     bg = 53 #법오 골방 : 53~64
     bkp = 65 # 법오 큰방 평상 : 65~96
     bkk = 97 # 법오 큰방 칸막이 : 97~348
     bj = 1 # 법오 작은방 1~52
-    fo = 1 # 401호 - 401(A) 1~66
+    fo = 1 # 401호 - 404(A) 1~66
     ff = 1 # 404호 - 404(B) 1~150
     sa = 1 # 서암 - 1~80
     gs = 81 # 국산 - 81~162
 
     for std in student : # 법오 큰방(골방) - 법오 큰방 53~64
-        if std[1]=='법오 골방(칸막이)':
+
+        if std[2]=='법오 골방(칸막이)':
             drawer = ['법오 큰방',bg]
             bg +=1 
             std_drawer=std+drawer
             #print(std_drawer)
             result.append(std_drawer)
-        elif std[1]=='법오 큰방(평상)':
+        elif std[2]=='법오 큰방(평상)':
             drawer = ['법오 큰방',bkp]
             bkp+=1
             std_drawer=std+drawer
             #print(std_drawer)
             result.append(std_drawer)
-        elif std[1]=='법오 큰방(칸막이)':
+        elif std[2]=='법오 큰방(칸막이)':
             drawer = ['법오 큰방',bkk]
             bkk+=1
             std_drawer=std+drawer
             #print(std_drawer)
             result.append(std_drawer)
-        elif std[1]=='법오 작은방(평상)':
+        elif std[2]=='법오 작은방(평상)':
             drawer = ['법오 작은방',bj]
             bj+=1
             std_drawer=std+drawer
             #print(std_drawer)
             result.append(std_drawer)
-        elif std[1]=='15동 401호(칸막이)':
-            drawer = ['401(A)',fo]
+        elif std[2]=='15동 401호(칸막이)':
+            drawer = ['404(A)',fo]
             fo+=1
             std_drawer=std+drawer
             #print(std_drawer)
             result.append(std_drawer)
-        elif std[1]=='15동 404호(칸막이)':
+        elif std[2]=='15동 404호(칸막이)':
             drawer = ['404(B)',ff]
             ff+=1
             std_drawer=std+drawer
             #print(std_drawer)
             result.append(std_drawer)
-        elif std[1]=='서암(평상)':
+        elif std[2]=='서암(평상)':
             drawer = ['서암',sa]
             sa+=1
             std_drawer=std+drawer
             #print(std_drawer)
             result.append(std_drawer)     
-        elif std[1]=='국산(칸막이)':
+        elif std[2]=='국산(칸막이)':
             drawer = ['국산',gs]
             gs+=1
             std_drawer=std+drawer
@@ -106,8 +108,13 @@ if __name__=="__main__":
 
     #결과 출력
     with open('.\\output\\seat_drawer_result.csv', mode='wt',encoding='utf-8') as file:
-        file.write("이름,열람실,좌석번호,사물함,사물함번호,학번\n")
+        #file.write("이름,열람실,좌석번호,사물함,사물함번호,학번뒤2자리\n")
+        file.write("이름,학번뒤2자리,열람실,좌석번호,사물함,사물함번호\n")
 
         for r in result : 
-            file.write(r[0]+","+r[1]+","+r[2]+","+r[4]+","+str(r[5])+","+r[3]+"\n")
-    print('[+]Done. check .\output\seat_drawer_result.csv')
+            file.write(r[0]+","+r[1]+","+r[2]+","+r[3]+","+r[4]+","+str(r[5])+"\n")
+    print('[+]Done. check .\\output\\seat_drawer_result.csv')
+
+    
+if __name__=="__main__":
+    main()

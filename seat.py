@@ -221,12 +221,14 @@ def std_under_alloc(student,seatlist):
         seatlist_tmp = []#임시변수 초기화        
     return result        
 
-def std_unmatched_alloc(student,seatlist): ## 남는 분들 학년 상관 없이 배치
+def std_unmatched_alloc(student,seatlist): ## 남는 분들 학년 상관 없이 배치 ## [2024] 여기서 남는 분들 전부 배치하는 것으로 변경.
     seatlist_tmp = []
     result = {}
     student_unmatched_1= student.copy() #1지망
     student_unmatched_2= student.copy() #2지망
     student_unmatched_3= student.copy() #3지망
+    student_unmatched_4= student.copy() #잔여
+    
 
     ## 1지망배치
     while len(student_unmatched_1) > 0 :
@@ -242,6 +244,7 @@ def std_unmatched_alloc(student,seatlist): ## 남는 분들 학년 상관 없이
             student_unmatched_1.pop(std_key) #학생리스트 삭제
             student_unmatched_2.pop(std_key) 
             student_unmatched_3.pop(std_key) 
+            student_unmatched_4.pop(std_key) 
             student.pop(std_key)
         else : #1지망 없는 경우
             student_unmatched_1.pop(std_key) #학생리스트 삭제
@@ -260,6 +263,7 @@ def std_unmatched_alloc(student,seatlist): ## 남는 분들 학년 상관 없이
             seatlist.remove(seat) #좌석 전체리스트에서 삭제
             student_unmatched_2.pop(std_key) #학생리스트 삭제
             student_unmatched_3.pop(std_key) 
+            student_unmatched_4.pop(std_key) 
             student.pop(std_key)
         else : #2지망 없는 경우
             student_unmatched_2.pop(std_key) #2지망 학생리스트에서만 삭제
@@ -277,13 +281,32 @@ def std_unmatched_alloc(student,seatlist): ## 남는 분들 학년 상관 없이
             result[std_key]=seat #결과 반영
             seatlist.remove(seat) #좌석 전체리스트에서 삭제
             student_unmatched_3.pop(std_key) #학생리스트 삭제
+            student_unmatched_4.pop(std_key)
             student.pop(std_key)
         else : #3지망 없는 경우
             student_unmatched_3.pop(std_key) #3지망 학생리스트에서만 삭제
-        seatlist_tmp = []#임시변수 초기화        
-    return result   
+        seatlist_tmp = []#임시변수 초기화 
 
-if __name__=="__main__":
+    ## 마지막까지 안 된 분들 배치
+
+    while len(student_unmatched_4) > 0 :
+        std_key = random.choice(list(student_unmatched_4.keys())) #1명 랜덤 선택
+
+        for seat in seatlist : #잔여 좌석 리스트
+            if seat[3]=='open' :
+                seatlist_tmp.append(seat)
+        if len(seatlist_tmp) > 0 : 
+            seat = random.choice(seatlist_tmp) #랜덤 좌석 배치
+            result[std_key]=seat #결과 반영
+            seatlist.remove(seat) #좌석 전체리스트에서 삭제
+            student_unmatched_4.pop(std_key)
+            student.pop(std_key)
+        else : 
+            student_unmatched_4.pop(std_key) #3지망 학생리스트에서만 삭제
+        seatlist_tmp = []#임시변수 초기화            
+    return result   
+def main():
+#if __name__=="__main__":
     #def and input
     infile_std = '.\\input\\input_data.csv'
     infile_seat = '.\\input\\seatlist.csv'
@@ -307,13 +330,23 @@ if __name__=="__main__":
 
     #결과 출력
     with open('.\\output\\seat_result.csv', mode='wt',encoding='UTF-8') as file:
-        file.write("이름,열람실,좌석번호,학번\n")
+        """
+        file.write("이름,열람실,좌석번호,학번뒤2자리\n")
         for key, value in result_total.items() : 
             name = key.split("_")[0]
-            id = key.split("_")[1]
+            id = key.split("_")[1][-2:] #가명처리로, 뒷 2자리만
             room = value[1]
             roomid = value[2]
             file.write(name+","+room+","+roomid+","+id+"\n")
+        """
+        file.write("이름,학번뒤2자리,열람실,좌석번호\n")
+        for key, value in result_total.items() : 
+            name = key.split("_")[0]
+            id = key.split("_")[1][-2:] #가명처리로, 뒷 2자리만
+            room = value[1]
+            roomid = value[2]
+            file.write(name+","+id+","+room+","+roomid+"\n")
+
     print("[+]배치결과 저장 경로: .\\output\\seat_result.csv")
     #남은 학생 출력
     with open('.\\output\\seat_unmatched_student.csv', mode='wt',encoding='UTF-8') as file:
@@ -328,3 +361,5 @@ if __name__=="__main__":
     print("[+]남은 좌석 리스트 저장 경로: .\\output\\seat_unmatched_seat.csv")
     
 
+if __name__=="__main__":
+    main()
