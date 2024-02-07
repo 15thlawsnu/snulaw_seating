@@ -1,5 +1,6 @@
 import seat
 import drawer
+import check_input
 import hashlib
 
 if __name__=="__main__":
@@ -10,6 +11,7 @@ if __name__=="__main__":
     f.close()
     print("[***]입력값 해시(SHA256) : "+hashlib.sha256(data).hexdigest())
     #돌리기
+    check_input.main()
     seat.main()
     drawer.main()
     #seat_drawer_result.csv 해시값 출력
