@@ -14,7 +14,7 @@ def main():
             seatnum += 1
     print("[*]학생 수 및 좌석 수 체크")
     print("[*]학생 수:" + str(stdnum) + ", 좌석 수:" +str(seatnum))
-    if stdnum < seatnum : 
+    if stdnum > seatnum : 
         print("[-]좌석 수 부족. 입력값 조정할 것!")    
     
 
