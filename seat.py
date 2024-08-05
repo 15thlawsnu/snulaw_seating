@@ -221,8 +221,12 @@ def std_under_alloc(student,seatlist):
         seatlist_tmp = []#임시변수 초기화        
     return result        
 
-def std_unmatched_alloc(student,seatlist): ## 남는 분들 학년 상관 없이 배치 ## [2024] 여기서 남는 분들 전부 배치하는 것으로 변경.
+def std_unmatched_alloc(student,seatlist): 
+    # 남는 분들 학년 상관 없이 배치 
+    ## [2024] 여기서 남는 분들 전부 배치하는 것으로 변경.
+    ## [2024/8] 남는좌석 배치시 학년별 좌석에 우선적으로 배치. 2024-1 민원사항 반영. 
     seatlist_tmp = []
+    seatlist_tmp2 = []
     result = {}
     student_unmatched_1= student.copy() #1지망
     student_unmatched_2= student.copy() #2지망
@@ -288,23 +292,59 @@ def std_unmatched_alloc(student,seatlist): ## 남는 분들 학년 상관 없이
         seatlist_tmp = []#임시변수 초기화 
 
     ## 마지막까지 안 된 분들 배치
-
+    ## [2024/8] 남는좌석 배치시 학년별 좌석에 우선적으로 배치. 2024-1 민원사항 반영. 
     while len(student_unmatched_4) > 0 :
         std_key = random.choice(list(student_unmatched_4.keys())) #1명 랜덤 선택
 
-        for seat in seatlist : #잔여 좌석 리스트
-            if seat[3]=='open' :
-                seatlist_tmp.append(seat)
-        if len(seatlist_tmp) > 0 : 
-            seat = random.choice(seatlist_tmp) #랜덤 좌석 배치
-            result[std_key]=seat #결과 반영
-            seatlist.remove(seat) #좌석 전체리스트에서 삭제
-            student_unmatched_4.pop(std_key)
-            student.pop(std_key)
-        else : 
-            student_unmatched_4.pop(std_key) #3지망 학생리스트에서만 삭제
-        seatlist_tmp = []#임시변수 초기화            
+        #학생이 3학년, 수료생인 경우, 3학년 및 수료생 빈좌석에 우선 자리 배정
+        if student_unmatched_4[std_key][0] == '3학년' or student_unmatched_4[std_key][0] == '수료생' :
+            for seat in seatlist : #3학년 잔여 좌석 리스트 
+                if seat[3]=='open' and (seat[0] == '3학년' or seat[0] == '수료생'):
+                    seatlist_tmp.append(seat)
+                elif seat[3]=='open': #잔여 2학년 좌석 리스트
+                    seatlist_tmp2.append(seat)
+
+            if len(seatlist_tmp) > 0 : #3학년 잔여 좌석이 있는 경우
+                seat = random.choice(seatlist_tmp) #랜덤 좌석 배치
+                result[std_key]=seat #결과 반영
+                seatlist.remove(seat) #좌석 전체리스트에서 삭제
+                student_unmatched_4.pop(std_key)
+                student.pop(std_key)
+            elif len(seatlist_tmp2) > 0 : #1,2학년 잔여 좌석이 있는 경우
+                seat = random.choice(seatlist_tmp2) #랜덤 좌석 배치
+                result[std_key]=seat #결과 반영
+                seatlist.remove(seat) #좌석 전체리스트에서 삭제
+                student_unmatched_4.pop(std_key)
+                student.pop(std_key)
+            else : #잔여 좌석이 없는 경우 
+                student_unmatched_4.pop(std_key) #3지망 학생리스트에서만 삭제
+              
+        # 1,2학년인 경우 1,2학년 빈좌석에 우선 자리 배정
+        else : #학생 1,2학년
+            for seat in seatlist : #2학년 잔여 좌석 리스트 
+                if seat[3]=='open' and (seat[0] == '2학년'):
+                    seatlist_tmp.append(seat)
+                elif seat[3]=='open': #잔여 3학년 좌석 리스트
+                    seatlist_tmp2.append(seat)
+            if len(seatlist_tmp) > 0 : #1,2학년 잔여 좌석이 있는 경우
+                seat = random.choice(seatlist_tmp) #랜덤 좌석 배치
+                result[std_key]=seat #결과 반영
+                seatlist.remove(seat) #좌석 전체리스트에서 삭제
+                student_unmatched_4.pop(std_key)
+                student.pop(std_key)
+            elif len(seatlist_tmp2) > 0 : #3학년 잔여 좌석이 있는 경우
+                seat = random.choice(seatlist_tmp2) #랜덤 좌석 배치
+                result[std_key]=seat #결과 반영
+                seatlist.remove(seat) #좌석 전체리스트에서 삭제
+                student_unmatched_4.pop(std_key)
+                student.pop(std_key)
+            else : 
+                student_unmatched_4.pop(std_key) #3지망 학생리스트에서만 삭제
+        seatlist_tmp = []#임시변수 초기화   
+        seatlist_tmp2 = []                
+     
     return result   
+    
 def main():
 #if __name__=="__main__":
     #def and input
