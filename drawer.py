@@ -47,6 +47,8 @@ def main():
         elif std[2]=='법오 큰방(평상)':
             drawer = ['법오 큰방',bkp]
             bkp+=1
+            if bkp==89:
+                bkp+=1
             std_drawer=std+drawer
             #print(std_drawer)
             result.append(std_drawer)
