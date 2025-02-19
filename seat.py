@@ -348,8 +348,8 @@ def std_unmatched_alloc(student,seatlist):
 def main():
 #if __name__=="__main__":
     #def and input
-    infile_std = '.\\input\\input_data.csv'
-    infile_seat = '.\\input\\seatlist.csv'
+    infile_std = './input/input_data.csv'
+    infile_seat = './input/seatlist.csv'
     
     student_all = csv_to_dict_std(infile_std)
     seatlist_all = csv_to_list_seat(infile_seat)
@@ -369,7 +369,7 @@ def main():
     #print(seatlist_all)
 
     #결과 출력
-    with open('.\\output\\seat_result.csv', mode='wt',encoding='UTF-8') as file:
+    with open('./output/seat_result.csv', mode='wt',encoding='UTF-8') as file:
         """
         file.write("이름,열람실,좌석번호,학번뒤2자리\n")
         for key, value in result_total.items() : 
@@ -387,18 +387,18 @@ def main():
             roomid = value[2]
             file.write(name+","+id+","+room+","+roomid+"\n")
 
-    print("[+]배치결과 저장 경로: .\\output\\seat_result.csv")
+    print("[+]배치결과 저장 경로: ./output/seat_result.csv")
     #남은 학생 출력
-    with open('.\\output\\seat_unmatched_student.csv', mode='wt',encoding='UTF-8') as file:
+    with open('./output/seat_unmatched_student.csv', mode='wt',encoding='UTF-8') as file:
         file.write("이름_학번,학년,1지망,2지망,3지망\n")
         for key, value in student_all.items() : 
             file.write(key+","+value[0]+","+value[1]+","+value[2]+","+value[3]+"\n")
-    print("[+]남은 학생 리스트 저장 경로: .\\output\\seat_unmatched_student.csv")
+    print("[+]남은 학생 리스트 저장 경로: ./output/seat_unmatched_student.csv")
     #남은 좌석 출력
-    with open('.\\output\\seat_unmatched_seat.csv', mode='wt',encoding='UTF-8') as file:
+    with open('./output/seat_unmatched_seat.csv', mode='wt',encoding='UTF-8') as file:
         for i in seatlist_all:
             file.write(i[0]+","+i[1]+","+i[2]+","+i[3]+"\n")
-    print("[+]남은 좌석 리스트 저장 경로: .\\output\\seat_unmatched_seat.csv")
+    print("[+]남은 좌석 리스트 저장 경로: ./output/seat_unmatched_seat.csv")
     
 
 if __name__=="__main__":

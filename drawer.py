@@ -17,7 +17,7 @@ def main():
     # 좌석배치 완료된 파일에서 정보 입력
     student = []
     result = []
-    file_path = ".\\output\\seat_result.csv"
+    file_path = "./output/seat_result.csv"
     with open(file_path, mode='rt',encoding='UTF-8', newline='') as csvfile:
         csvreader = csv.reader(csvfile)
         next(csvreader)  # 첫 번째 행을 건너뜁니다
@@ -109,13 +109,13 @@ def main():
         print("[-]전체 숫자 안 맞음. 데이터 오타 확인할 것")
 
     #결과 출력
-    with open('.\\output\\seat_drawer_result.csv', mode='wt',encoding='utf-8') as file:
+    with open('./output/seat_drawer_result.csv', mode='wt',encoding='utf-8') as file:
         #file.write("이름,열람실,좌석번호,사물함,사물함번호,학번뒤2자리\n")
         file.write("이름,학번뒤2자리,열람실,좌석번호,사물함,사물함번호\n")
 
         for r in result : 
             file.write(r[0]+","+r[1]+","+r[2]+","+r[3]+","+r[4]+","+str(r[5])+"\n")
-    print('[+]좌석 및 사물함 배치 결과 저장 경로: .\\output\\seat_drawer_result.csv')
+    print('[+]좌석 및 사물함 배치 결과 저장 경로: ./output/seat_drawer_result.csv')
 
     
 if __name__=="__main__":
