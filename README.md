@@ -19,14 +19,12 @@
      - **주의** : UTF-8형태로, 그대로 엑셀에서 열면 한글이 깨질 수 있음. ansi 인코딩으로 바꾸거나, 엑셀에서 열 때 인코딩 변환할 것 (엑셀-> 데이터->데이터 가져오기->텍스트/CSV에서 -> 파일 선택-> 인코딩 UTF-8로 변환 후 로드)
   ## [.\input\seatlist.csv](input/seatlist.csv) 
     - 열람실 좌석 리스트. 좌석 구성에 변화가 생긴다면 이 파일을 수정할 것. 형식 변환 X
-  ## [.\input\seatlist_origin.csv](input/seatlist_origin.csv) 
-    - 열람실 좌석 리스트로, "미배정시 자유석" 부분만 closed 상태이고, 나머지는 전부 open인 파일.
   ## [.\input\input_data.csv](input/input_data.csv)
     - 입력 파일 예시
 
 # 사용 방법
 ## 2024 ver.
-1. 입력받은 설문 시트 그대로 csv로 출력 후 .\input\input_data.csv에 저장. 
+1. 입력받은 설문 시트 그대로 csv로 출력 후 .\input\input_data.csv에 저장.
 2. ``python run.py``  실행
 3. output 폴더에서 seat_drawer_result.csv 확인 및 검증
 4. 입력값, 결과값 무결성 검증 위해 해시값 및 파일 백업 필요
