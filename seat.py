@@ -10,6 +10,11 @@ STD_TYPE_TO_SEAT_TYPE = {
     '2학년': '2학년'
 }
 
+## [2025.8.] 남는 좌석 배치시 노트북 허용 열람실에 우선적으로 배치
+LAPTOP_NOT_ALLOWED_ZONES = [
+    '15동 401호(평상)',
+    '15동 401호(칸막이)',
+]
 
 def get_preferred_seat_type(std_type):
     """
@@ -49,7 +54,7 @@ def std_alloc(student, seatlist, std_types, seat_types):
     """
     학생들을 좌석에 배치하는 함수
     student: {학생이름: [학년, 1지망, 2지망, 3지망, ...]}
-    seatlist: [[좌석종류, 학급, ..., 상태], ...]
+    seatlist: [[배정 대상 학년, 열람실, 번호, 상태], ...]
     std_types: 배정 대상 학년 리스트 (예: ['3학년', '수료생', '졸업생']), 비어있으면 전체 학생 대상
     seat_types: 배정 가능한 좌석 종류 리스트 (예: ['3학년']), 비어있으면 전체 좌석 대상
     """
@@ -112,31 +117,49 @@ def std_alloc_unmatched(student, seatlist):
     """
     학생들을 좌석에 배치하는 함수
     student: {학생이름: [학년, 1지망, 2지망, 3지망, ...]}
-    seatlist: [[좌석종류, 학급, ..., 상태], ...]
-    std_type_to_seat_type: 우선적으로 배정할 학년별 좌석 타입. (예: {'3학년': '3학년', '수료생': '3학년', ...})
+    seatlist: [[배정 대상 학년, 열람실, 번호, 상태], ...]
     """
 
     result = {}  # 최종 배치 결과 저장
     curr_students = list(student.keys())  # 배정 대상 학생 명단
     random.shuffle(curr_students)  # 배정 순서 섞기
 
-    ## [2024.8.] 남는좌석 배치시 학년별 좌석에 우선적으로 배치. 2024-1 민원사항 반영.
+    ## [2025.8.] 남는 좌석 배치시 노트북 허용 열람실에 우선적으로 배치
+    laptop_allowed_cnt = len([0 for seat in seatlist if seat[1] not in LAPTOP_NOT_ALLOWED_ZONES])
+
+    ## [2024.8.] 남는 좌석 배치시 학년별 좌석에 우선적으로 배치. 2024-1 민원사항 반영.
     for std_key in curr_students:
         std_type = student[std_key][0]
         preferred_seat_type = get_preferred_seat_type(std_type)
 
-        seatlist_tmp = []  # 지망 열람실 내 현재 배정 가능 좌석 목록
-        for seat in seatlist:
-            if seat[0] == preferred_seat_type:  # 좌석 타입 조건이 있으나 미충족 시 생략
-                seatlist_tmp.append(seat)
+        seatlist_tmp_std_type_matched = []      # 지망 열람실 내 현재 배정 가능 좌석 목록
+        seatlist_tmp_std_type_unmatched = []    # 지망 열람실 내 현재 배정 가능 좌석 목록
 
-        if seatlist_tmp:  # 좌석 타입 조건에 맞는 좌석이 있으면 배정
-            seat = random.choice(seatlist_tmp)
+        for seat in seatlist:
+            ## [2025.8.] 남는 좌석 배치시 노트북 허용 열람실에 우선적으로 배치
+            if laptop_allowed_cnt > 0 and seat[1] in LAPTOP_NOT_ALLOWED_ZONES:
+                continue
+            if seat[0] == preferred_seat_type:
+                seatlist_tmp_std_type_matched.append(seat)
+            else:
+                seatlist_tmp_std_type_unmatched.append(seat)
+
+        if laptop_allowed_cnt > 0:
+            laptop_allowed_cnt -= 1
+
+        if seatlist_tmp_std_type_matched:  # 좌석 타입 조건에 맞는 좌석이 있으면 배정
+            seat = random.choice(seatlist_tmp_std_type_matched)
             result[std_key] = seat
             seatlist.remove(seat)  # 좌석 제거
             student.pop(std_key)  # 학생 제거
 
-        elif seatlist:  # 없는 경우 아무 자리나 배정
+        elif seatlist_tmp_std_type_unmatched:  # 없는 경우 아무 자리나 배정
+            seat = random.choice(seatlist_tmp_std_type_unmatched)
+            result[std_key] = seat
+            seatlist.remove(seat)  # 좌석 제거
+            student.pop(std_key)  # 학생 제거
+
+        elif seatlist:   # 혹시 몰라 넣어 두었으나, 걸릴 일 없음
             seat = random.choice(seatlist)
             result[std_key] = seat
             seatlist.remove(seat)  # 좌석 제거
@@ -157,10 +180,6 @@ def std_grad_alloc(student, seatlist):
 def std_2nd_alloc(student, seatlist):
     ## [2025.8.] 좌석 배정 시 이전 단계 잔여 좌석도 활용하되, 학년별 좌석에 우선적으로 배치하도록 로직 수정
     return std_alloc(student, seatlist, [], ['3학년', '졸업생', '2학년'])
-
-
-def std_unmatched_alloc(student, seatlist):
-    return std_alloc_unmatched(student, seatlist)
 
 
 def main():
@@ -219,8 +238,14 @@ def main():
 
     # 남은 좌석 출력
     with open('./output/seat_unmatched_seat.csv', mode='wt', encoding='UTF-8') as file:
+        unmatched_seats = {}
         for i in seatlist_open:
             file.write(i[0] + "," + i[1] + "," + i[2] + "," + i[3] + "\n")
+        #     key = i[0] + "_" + i[1]
+        #     if key not in unmatched_seats:
+        #         unmatched_seats[key] = 0
+        #     unmatched_seats[key] += 1
+        # print(unmatched_seats)
         for i in seatlist_closed:
             file.write(i[0] + "," + i[1] + "," + i[2] + "," + i[3] + "\n")
     print("[+]남은 좌석 리스트 저장 경로: ./output/seat_unmatched_seat.csv")
