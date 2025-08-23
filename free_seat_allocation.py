@@ -14,7 +14,7 @@ def convert_winner_xlsx_to_csv(xlsx_file, csv_file):
 TODAY = '2025. 8. 23'   # 반드시 2025. 1. 1 형태
 
 # 랜덤 시드 고정 (YYYYMMDD 숫자로 변환)
-seed_str = TODAY.replace(' ', '').replace('.', '')  # '2025.823' → '2025823'
+seed_str = TODAY.replace(' ', '').replace('.', '')  # '2025. 8. 23' → '2025823'
 random.seed(int(seed_str))
 
 # ==========================
@@ -195,10 +195,13 @@ def allocate_preferences(input_data, free_seat):
 # 최종 CSV 출력
 # ==========================
 def save_allocation_csv(result, filename):
+    # 공통 헤더 정의
+    headers = ['성명', '학번뒤2자리', '열람실', '변경전좌석', '변경후좌석']
+
     # CSV 저장
     with open(filename, 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
-        writer.writerow(['성명', '학번뒤2자리', '열람실', '이전좌석', '이동좌석'])
+        writer.writerow(headers)
         for r in result:
             writer.writerow([
                 r['name'],
@@ -207,12 +210,17 @@ def save_allocation_csv(result, filename):
                 r['prev_seat'],
                 r['new_seat']
             ])
-    # XLSX 저장
-    df = pd.DataFrame(result)
+
+    # XLSX 저장 (빈 데이터도 헤더 유지)
+    rows = [
+        [r['name'], r['stdid'], r['seat_room'], r['prev_seat'], r['new_seat']]
+        for r in result
+    ]
+    df = pd.DataFrame(rows, columns=headers)
     xlsx_filename = filename.replace('.csv', '.xlsx')
     df.to_excel(xlsx_filename, index=False, engine='openpyxl')
-    print(f"[+] {xlsx_filename} 생성 완료")
 
+    print(f"[+] {xlsx_filename} 생성 완료")
 def update_free_seat_csv(free_seat_list, filename):
     with open(filename, 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
