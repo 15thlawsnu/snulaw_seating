@@ -37,22 +37,3 @@
 5. ``python drawer.py`` 실행
 6. 엑셀에서 ``.\output\seat_drawer_result.csv`` 불러와서 결과 확인
 
-
-
-# 자유좌석 배정 (2025-2 신규 추가)
-## 사전 준비
-1. run.py를 실행하면 자동으로 열려 있는 좌석 정보가 free_seat.csv에 저장됩니다.
-2. sort_free_seat.py를 실행하면 free_seat.csv가 정렬되고, 동시에 .xlsx 파일도 생성됩니다.
-
-## 배정 예시 (8월 24일 기준)
-1. Google Form 응답 기록을 CSV로 다운로드하여 free/input_data_free.csv로 교체.
-2. 8월 24일 23:59까지 올라온 댓글을 모두 반영한 배치 결과 .xlsx 파일을 free/seat_drawer_result.xlsx로 교체.
-3. free_seat_allocation.py의 TODAY를 '2025. 8. 24'로 수정
-4. free_seat_allocation.py 실행.
-5. 배정 결과 및 배치 결과 파일에 변경 사항이 반영됨.
-6. 생성된 free_seat.csv와 free_seat_allocation_YYYY_M_D.csv 파일은 게시글 댓글로 공유.
-
-## 참고사항
-1. free_seat.csv와 seat_drawer_result.xlsx에 중복 좌석이 있으면 오류를 발생시키고 실행이 중단됩니다. 재실행 전 각 파일을 확인해주세요.
-2. 신청자의 학번 뒷 두 자리가 05 또는 5처럼 입력되어도 정상 매칭됩니다. 이외의 잘못된 데이터는 모두 무시합니다.
-3. 난수(seed)는 오늘 날짜 기준으로 고정되어 재실행 시에도 동일한 결과를 재현 가능.

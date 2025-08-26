@@ -250,11 +250,6 @@ def main():
             file.write(i[0] + "," + i[1] + "," + i[2] + "," + i[3] + "\n")
     print("[+]남은 좌석 리스트 저장 경로: ./output/seat_unmatched_seat.csv")
 
-    # 추후 잔여 좌석 배치용 파일 출력
-    with open('./free/free_seat.csv', mode='wt', encoding='UTF-8') as file:
-        for i in seatlist_open:
-            file.write(i[1] + "," + i[2] + "\n")
-    print("[+]배정 가능 잔여 좌석 리스트 저장 경로: ./free/free_seat.csv")
 
 if __name__ == "__main__":
     main()
